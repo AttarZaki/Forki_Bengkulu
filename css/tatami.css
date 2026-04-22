@@ -1,0 +1,138 @@
+/* ═══════════════════════════════════════════════════════
+   css/tatami.css — Jadwal Tatami (admin & public view)
+═══════════════════════════════════════════════════════ */
+
+/* ── TATAMI MODAL HEADER ─────────────────────────────*/
+.tat-modal-toolbar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 14px 24px; border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.tat-modal-toolbar select {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: var(--font); font-size: 13px; font-weight: 500;
+  padding: 8px 12px; outline: none; min-width: 130px;
+  transition: border-color .2s;
+}
+.tat-modal-toolbar select:focus { border-color: var(--primary); }
+
+/* ── ADMIN LIST ──────────────────────────────────────*/
+.tat-admin-list-wrap {
+  padding: 0 24px 16px; overflow-y: auto; max-height: calc(90vh - 320px);
+}
+
+.tat-date-group  { margin-bottom: 16px; }
+.tat-date-header {
+  font-size: 12px; font-weight: 800; color: var(--text-muted);
+  letter-spacing: .5px; text-transform: uppercase;
+  padding: 8px 0 8px; border-bottom: 2px solid var(--border);
+  margin-bottom: 8px;
+}
+
+.tat-row {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 10px 0; border-bottom: 1px solid var(--border);
+}
+.tat-row:last-child { border-bottom: none; }
+
+.tat-tatami-badge {
+  background: var(--primary); color: #fff;
+  font-size: 11px; font-weight: 800; padding: 4px 10px;
+  border-radius: 99px; white-space: nowrap; flex-shrink: 0;
+  align-self: center;
+}
+
+.tat-row-body    { flex: 1; min-width: 0; }
+.tat-row-time    { font-size: 14px; font-weight: 800; color: var(--text); }
+.tat-row-cat     { font-size: 13px; font-weight: 600; color: var(--primary); margin-top: 2px; }
+.tat-row-meta    { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.tat-row-meta span { font-size: 11px; color: var(--text-muted); }
+
+.tat-row-actions { display: flex; gap: 6px; flex-shrink: 0; align-self: center; }
+
+/* ── FORM AREA ───────────────────────────────────────*/
+.tat-form-area {
+  border-top: 2px solid var(--border);
+  padding: 16px 24px 8px; background: var(--surface2);
+}
+.tat-form-title {
+  font-size: 15px; font-weight: 800; color: var(--text); margin-bottom: 14px;
+}
+.tat-form-grid {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
+}
+.tat-form-grid .form-group.full { grid-column: 1 / -1; }
+.tat-form-btns  { display: flex; gap: 10px; margin-top: 14px; padding-bottom: 4px; }
+
+/* ── EMPTY STATE ─────────────────────────────────────*/
+.tat-empty {
+  text-align: center; padding: 32px 16px; color: var(--text-muted); font-size: 13px;
+}
+
+/* ── PUBLIC VIEW GRID ────────────────────────────────*/
+.tat-view-toolbar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  padding: 12px 24px; border-bottom: 1px solid var(--border);
+  background: var(--surface2);
+}
+.tat-view-toolbar select {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text);
+  font-family: var(--font); font-size: 13px; font-weight: 500;
+  padding: 8px 12px; outline: none; min-width: 150px;
+}
+
+.tat-view-content {
+  overflow: auto; max-height: calc(90vh - 220px); padding: 16px 24px;
+}
+
+.tat-grid-date-label {
+  font-size: 13px; font-weight: 800; color: var(--text-muted);
+  text-transform: uppercase; letter-spacing: .5px;
+  margin-bottom: 12px;
+}
+
+.tat-grid-wrap  { overflow-x: auto; }
+.tat-grid {
+  display: grid; gap: 10px; min-width: max-content;
+}
+
+.tat-col        { display: flex; flex-direction: column; gap: 8px; min-width: 160px; }
+.tat-col-header {
+  background: var(--primary); color: #fff;
+  font-size: 12px; font-weight: 800; text-align: center;
+  padding: 8px 12px; border-radius: var(--radius-sm);
+  letter-spacing: .5px; text-transform: uppercase;
+}
+
+.tat-cell {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 10px 12px;
+  transition: border-color .2s;
+}
+.tat-cell:hover { border-color: var(--primary); }
+
+.tat-cell-time  { font-size: 13px; font-weight: 800; color: var(--primary); margin-bottom: 4px; }
+.tat-cell-cat   { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; }
+.tat-cell-ref   { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+.tat-cell-notes { font-size: 11px; color: var(--text-muted); margin-top: 2px; }
+
+/* ── DAY SECTIONS (all-days view) ────────────────────*/
+.tat-day-section { margin-bottom: 20px; }
+
+/* ── ADMIN TATAMI TAB (list all events) ──────────────*/
+.tat-event-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 14px 0; border-bottom: 1px solid var(--border);
+}
+.tat-event-row:last-child { border-bottom: none; }
+.tat-event-info  { flex: 1; min-width: 0; }
+.tat-event-name  { font-size: 14px; font-weight: 700; color: var(--text); margin-bottom: 3px; }
+.tat-event-meta  { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
+
+/* ── DARK MODE ───────────────────────────────────────*/
+body.dark .tat-cell           { background: var(--surface); }
+body.dark .tat-modal-toolbar  { background: var(--surface2); }
+body.dark .tat-view-toolbar   { background: var(--surface2); }
+body.dark .tat-form-area      { background: var(--surface2); }

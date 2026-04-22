@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Sistem Informasi Kejuaraan Karate Provinsi Bengkulu</title>
+<meta name="description" content="Platform resmi kejuaraan karate Provinsi Bengkulu — FORKI Bengkulu"/>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="css/base.css"/>
+<link rel="stylesheet" href="css/app.css"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<nav class="navbar" id="main-navbar">
+  <div class="nav-brand" onclick="goLanding()">🥋 Karate<span class="brand-accent">BENGKULU</span></div>
+  <div class="nav-links" id="nav-links"></div>
+  <div class="nav-right" id="nav-right">
+    <button class="btn-dark" onclick="toggleDark()"><span id="dark-icon">🌙</span></button>
+    <button class="btn-nav-login" onclick="showPage('page-user-login')">Masuk</button>
+  </div>
+  <button class="hamburger" id="hamburger" onclick="toggleMobNav()"><span></span><span></span><span></span></button>
+</nav>
+<div class="mobile-nav" id="mobile-nav"></div>
+
+<!-- COUNTDOWN STRIP (nearest upcoming event) -->
+<div class="countdown-strip" id="countdown-strip" style="display:none">
+  <div class="countdown-inner">
+    <span class="countdown-event-name" id="cd-event-name">—</span>
+    <div class="countdown-timer">
+      <div class="cd-unit"><div class="cd-num" id="cd-days">00</div><div class="cd-lbl">Hari</div></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-unit"><div class="cd-num" id="cd-hours">00</div><div class="cd-lbl">Jam</div></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-unit"><div class="cd-num" id="cd-mins">00</div><div class="cd-lbl">Mnt</div></div>
+      <span class="cd-sep">:</span>
+      <div class="cd-unit"><div class="cd-num" id="cd-secs">00</div><div class="cd-lbl">Dtk</div></div>
+    </div>
+    <span class="countdown-badge" id="cd-badge">—</span>
+  </div>
+</div>
+
+<!-- PAGE: LANDING -->
+<div class="page active" id="page-landing">
+  <section class="lp-hero">
+    <div class="lp-hero-bg-text">空手道</div>
+    <!-- Decorative elements -->
+    <div class="hero-ring hero-ring-1"></div>
+    <div class="hero-ring hero-ring-2"></div>
+    <div class="hero-ring hero-ring-3"></div>
+    <div class="hero-glow"></div>
+
+    <div class="lp-hero-inner">
+      <div class="lp-hero-left reveal reveal-left">
+        <div class="hero-badge-strip">
+          <span class="hero-badge badge-accent">🇮🇩 FORKI Provinsi Bengkulu</span>
+          <span class="hero-badge">Platform Resmi Karate</span>
+        </div>
+        <h1>KEJUARAAN<em>KARATE</em>BENGKULU</h1>
+        <p class="lp-hero-sub">Platform informasi & pendaftaran kejuaraan karate resmi Provinsi Bengkulu. Bagan, tatami, hasil, dan pembayaran — semua dalam satu platform.</p>
+        <div class="hero-cta-row">
+          <button class="btn-hero-primary" onclick="document.getElementById('events-section').scrollIntoView({behavior:'smooth'})">🗓️ Lihat Event</button>
+          <button class="btn-hero-secondary" onclick="showPage('page-user-login')">Daftar / Masuk</button>
+          <button class="btn-hero-secondary" onclick="openModal('modal-leaderboard');renderLeaderboard()" style="border-color:rgba(255,255,255,.4)">🏅 Leaderboard</button>
+        </div>
+      </div>
+      <div class="lp-hero-right reveal reveal-right"><div class="hero-stat-cards" id="hero-stats"></div></div>
+    </div>
+    <div class="hero-scroll-hint">scroll</div>
+  </section>
+  <div class="ticker-wrap"><div class="ticker-inner" id="ticker-inner"></div></div>
+
+  <!-- PROVINCE STATS -->
+  <section class="province-stats-section">
+    <div class="province-stats-inner">
+      <div class="province-stats-header reveal reveal-up">
+        <div>
+          <div class="province-stats-eyebrow">Statistik Karate Bengkulu</div>
+          <div class="province-stats-title">BENGKULU<br><span>BERPRESTASI</span></div>
+          <p class="province-stats-sub">Data real-time kejuaraan karate dari seluruh kabupaten dan kota di Provinsi Bengkulu.</p>
+        </div>
+      </div>
+      <div id="province-stats-wrap"></div>
+    </div>
+  </section>
+
+  <section class="lp-events" id="events-section">
+    <div class="sec-header reveal reveal-up">
+      <div>
+        <div class="sec-eyebrow">JADWAL KEJUARAAN</div>
+        <div class="sec-title">EVENT <span>AKTIF</span></div>
+      </div>
+    </div>
+    <div class="filter-section">
+      <div class="search-input-wrap" style="flex:2;min-width:200px">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="lp-search" placeholder="Cari event, lokasi…" oninput="renderLandingGrid()"/>
+      </div>
+      <select class="sort-sel" id="lp-kabupaten" onchange="renderLandingGrid()"></select>
+      <select class="sort-sel" id="lp-sort" onchange="renderLandingGrid()">
+        <option value="newest">Terbaru</option><option value="oldest">Terlama</option>
+        <option value="name">Nama A–Z</option><option value="date">Tanggal Terdekat</option>
+      </select>
+      <button class="view-toggle-btn" onclick="toggleViewMode()" title="Ganti tampilan">☰ List</button>
+    </div>
+    <div class="pills-row" id="lp-pills"></div>
+    <div class="pills-row" id="lp-status-pills"></div>
+    <div class="event-grid" id="lp-event-grid"></div>
+  </section>
+
+  <section class="about-strip">
+    <div class="about-inner reveal-stagger">
+      <div class="about-item">
+        <div class="about-icon-wrap">🥋</div>
+        <div class="about-title">RESMI & TERPERCAYA</div>
+        <p class="about-text">Semua event merupakan kejuaraan karate resmi yang diselenggarakan oleh FORKI Bengkulu dan federasi kabupaten/kota.</p>
+      </div>
+      <div class="about-item">
+        <div class="about-icon-wrap">🏆</div>
+        <div class="about-title">BAGAN PERTANDINGAN</div>
+        <p class="about-text">Bracket otomatis atau manual. Pantau siapa lawan siapa hingga final. Cetak bagan langsung dari browser.</p>
+      </div>
+      <div class="about-item">
+        <div class="about-icon-wrap">📋</div>
+        <div class="about-title">JADWAL TATAMI</div>
+        <p class="about-text">Grid jadwal per tatami dengan waktu dan wasit. Lihat kapan dan di ring mana Anda bertanding.</p>
+      </div>
+      <div class="about-item">
+        <div class="about-icon-wrap">🎖️</div>
+        <div class="about-title">SERTIFIKAT DIGITAL</div>
+        <p class="about-text">Juara 1, 2, dan 3 bisa cetak sertifikat digital langsung. Hasil pertandingan dipublikasikan real-time.</p>
+      </div>
+    </div>
+  </section>
+  <footer class="lp-footer">
+    <div class="footer-inner">
+      <div class="footer-brand">🥋 KARATEBENGKULU</div>
+      <div class="footer-links">
+        <button class="footer-link" onclick="document.getElementById('events-section').scrollIntoView({behavior:'smooth'})">Event</button>
+        <button class="footer-link" onclick="showPage('page-user-login')">Masuk</button>
+        <button class="footer-link" onclick="switchAuthTab('register');showPage('page-user-login')">Daftar</button>
+        <button class="footer-link" onclick="openModal('modal-leaderboard');renderLeaderboard()">Leaderboard</button>
+      </div>
+      <div class="footer-copy">© 2025 Sistem Informasi Kejuaraan Karate Provinsi Bengkulu · FORKI Bengkulu</div>
+      <button class="admin-link" onclick="showPage('page-admin-login')">⚙ Admin Portal</button>
+    </div>
+  </footer>
+</div>
+
+<!-- PAGE: USER LOGIN -->
+<div class="page" id="page-user-login">
+  <div class="auth-page auth-page-user">
+    <div class="auth-bg-text">KARATE</div>
+    <div class="auth-container">
+      <button class="auth-back" onclick="goLanding()">← Kembali</button>
+      <div class="auth-logo"><div class="auth-emblem auth-emblem-user">🥋</div><h1 class="auth-logo-user">KARATEBENGKULU</h1><p>Platform Kejuaraan Karate Resmi Bengkulu</p></div>
+      <div class="auth-card auth-card-user">
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="utab-login" onclick="switchAuthTab('login')">Masuk</button>
+          <button class="auth-tab" id="utab-register" onclick="switchAuthTab('register')">Daftar Baru</button>
+        </div>
+        <div id="form-login" style="display:flex;flex-direction:column;gap:14px">
+          <div class="form-group"><label>Username / Email</label><input type="text" id="ul-username" placeholder="username atau email…"/></div>
+          <div class="form-group"><label>Password</label><input type="password" id="ul-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doUserLogin()"/></div>
+          <div class="error-msg" id="ul-error"></div>
+          <button class="btn-primary" onclick="doUserLogin()">Masuk</button>
+          <div class="auth-hint">Demo: <strong>user</strong> / <strong>user123</strong></div>
+        </div>
+        <div id="form-register" style="display:none;flex-direction:column;gap:14px">
+          <div class="form-row">
+            <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="ur-name" placeholder="Nama sesuai KTP"/></div>
+            <div class="form-group"><label>Username *</label><input type="text" id="ur-username" placeholder="min. 4 karakter"/></div>
+          </div>
+          <div class="form-group"><label>Email *</label><input type="email" id="ur-email" placeholder="email@contoh.com"/></div>
+          <div class="form-row">
+            <div class="form-group"><label>Password *</label><input type="password" id="ur-password" placeholder="min. 6 karakter"/></div>
+            <div class="form-group"><label>Konfirmasi *</label><input type="password" id="ur-password2" placeholder="ulangi password"/></div>
+          </div>
+          <div class="form-row">
+            <div class="form-group"><label>No. HP</label><input type="tel" id="ur-phone" placeholder="08xxxxxxxxxx"/></div>
+            <div class="form-group"><label>Dojo / Klub</label><input type="text" id="ur-dojo" placeholder="cth: Dojo Rafflesia"/></div>
+          </div>
+          <div class="error-msg" id="ur-error"></div>
+          <div class="success-msg" id="ur-success">✓ Akun berhasil dibuat! Silakan masuk.</div>
+          <button class="btn-primary" onclick="doUserRegister()">Buat Akun</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: ADMIN LOGIN -->
+<div class="page" id="page-admin-login">
+  <div class="auth-page auth-page-admin">
+    <div class="auth-bg-text">ADMIN</div>
+    <div class="auth-container">
+      <button class="auth-back" onclick="goLanding()">← Kembali</button>
+      <div class="auth-logo"><div class="auth-emblem auth-emblem-admin">🛡️</div><h1 class="auth-logo-admin">ADMIN PORTAL</h1><p>FORKI Bengkulu — Akses Administrator</p></div>
+      <div class="auth-card" style="border-color:rgba(220,38,38,.2)">
+        <div style="display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;padding:5px 12px;border-radius:99px;border:1.5px solid rgba(220,38,38,.25);color:var(--red);background:var(--red-light);margin-bottom:20px">🔒 Akses Terbatas</div>
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <div class="form-group"><label>Username Admin</label><input type="text" id="al-username" placeholder="admin"/></div>
+          <div class="form-group"><label>Password</label><input type="password" id="al-password" placeholder="••••••••" onkeydown="if(event.key==='Enter')doAdminLogin()"/></div>
+          <div class="error-msg" id="al-error">⚠️ Akses ditolak.</div>
+          <button class="btn-primary-red" onclick="doAdminLogin()">Masuk sebagai Admin</button>
+          <div class="auth-hint">Demo: <strong>admin</strong> / <strong>admin123</strong></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: USER APP -->
+<div class="page" id="page-user-app">
+  <div class="user-hero"><div class="user-hero-bg">空手道</div><div class="user-hero-inner"><div class="user-eyebrow">▶ Selamat Datang, Karateka Bengkulu</div><h2>HALO, <em style="color:var(--accent);font-style:normal" id="user-welcome-name">—</em></h2><p>Temukan & daftarkan diri ke kejuaraan karate Bengkulu.</p></div></div>
+  <div class="stats-bar"><div class="stats-bar-inner">
+    <div class="stat-item"><div class="stat-num" style="color:var(--primary)" id="us-total">0</div><div class="stat-lbl">Event</div></div>
+    <div class="stat-item"><div class="stat-num" style="color:var(--green)"   id="us-open">0</div><div class="stat-lbl">Dibuka</div></div>
+    <div class="stat-item"><div class="stat-num" style="color:var(--accent)"  id="us-soon">0</div><div class="stat-lbl">Segera</div></div>
+    <div class="stat-item"><div class="stat-num" style="color:var(--blue)"    id="us-myregs">0</div><div class="stat-lbl">Daftar Saya</div></div>
+  </div></div>
+  <div class="lp-events">
+    <div class="sec-header"><div><div class="sec-eyebrow">KEJUARAAN KARATE BENGKULU</div><div class="sec-title">EVENT <span>TERSEDIA</span></div></div></div>
+    <div class="filter-section">
+      <div class="search-input-wrap" style="flex:1"><span class="search-icon">🔍</span><input type="text" id="ua-search" placeholder="Cari event…" oninput="renderUserGrid()"/></div>
+      <select class="sort-sel" id="ua-sort" onchange="renderUserGrid()"><option value="newest">Terbaru</option><option value="name">Nama A–Z</option><option value="date">Tanggal Terdekat</option></select>
+      <button class="view-toggle-btn" onclick="toggleViewMode()" title="Ganti tampilan">☰ List</button>
+    </div>
+    <div class="pills-row" id="ua-pills"></div>
+    <div class="pills-row" id="ua-status-pills"></div>
+    <div class="event-grid" id="ua-event-grid"></div>
+  </div>
+  <footer class="lp-footer"><div class="footer-inner"><div class="footer-brand">🥋 KARATEBENGKULU</div><div class="footer-copy">© 2025 Sistem Informasi Kejuaraan Karate Provinsi Bengkulu</div></div></footer>
+</div>
+
+<!-- PAGE: USER PROFILE -->
+<div class="page" id="page-user-profile">
+  <div class="profile-page">
+    <button class="btn-back-sm" style="margin-bottom:20px" onclick="showPage('page-user-app');renderUserDashboard()">← Kembali ke Event</button>
+    <div class="profile-card">
+      <button class="btn-edit-profile" onclick="openEditProfile()">✏️ Edit</button>
+      <div class="profile-avatar">👤</div>
+      <div class="profile-name"     id="prof-name">—</div>
+      <div class="profile-username" id="prof-username">@—</div>
+      <div class="profile-meta">
+        <div class="profile-meta-item">✉️ <span id="prof-email">—</span></div>
+        <div class="profile-meta-item">📱 <span id="prof-phone">—</span></div>
+        <div class="profile-meta-item">🥋 <span id="prof-dojo">—</span></div>
+      </div>
+      <!-- STATS ROW -->
+      <div class="profile-stats-row" id="prof-stats"></div>
+      <!-- ACTION BUTTONS -->
+      <div class="profile-action-btns">
+        <button class="btn-profile-action" onclick="openUserPaymentsModal()">💳 Pembayaran</button>
+        <button class="btn-profile-action" onclick="openModal('modal-leaderboard');renderLeaderboard()">🏅 Leaderboard</button>
+        <button class="btn-profile-action" onclick="openChangePasswordModal()">🔑 Ganti Password</button>
+      </div>
+    </div>
+    <div class="profile-section-card">
+      <div class="ps-title">🗂️ Riwayat Pendaftaran
+        <span style="font-size:12px;font-weight:400;color:var(--text-muted)">(klik 🪪 untuk kartu peserta)</span>
+      </div>
+      <div id="my-reg-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- PAGE: ADMIN -->
+<div class="page" id="page-admin-app">
+
+  <!-- SIDEBAR OVERLAY (mobile) -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeAdminSidebar()"></div>
+
+  <!-- ══ SIDEBAR ══ -->
+  <aside class="admin-sidebar">
+    <div class="sidebar-brand-row">
+      <span class="sidebar-brand-icon">🥋</span>
+      <div>
+        <div class="sidebar-brand-text">KarateBengkulu</div>
+        <div class="sidebar-brand-sub">Admin FORKI Bengkulu</div>
+      </div>
+    </div>
+
+    <!-- Utama -->
+    <div class="sidebar-section">
+      <span class="sidebar-sec-label">Utama</span>
+      <button class="sidebar-item active" id="atab-dashboard"    onclick="switchAdminTab('dashboard')"><span class="si-icon">📊</span><span class="si-label">Dashboard</span></button>
+      <button class="sidebar-item"        id="atab-events"       onclick="switchAdminTab('events')"><span class="si-icon">🗓️</span><span class="si-label">Kelola Event</span><span class="si-badge blue" id="sb-badge-events">0</span></button>
+      <button class="sidebar-item"        id="atab-announcements" onclick="switchAdminTab('announcements')"><span class="si-icon">📢</span><span class="si-label">Pengumuman</span></button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Pendaftaran -->
+    <div class="sidebar-section">
+      <span class="sidebar-sec-label">Pendaftaran</span>
+      <button class="sidebar-item" id="atab-participants" onclick="switchAdminTab('participants')"><span class="si-icon">👥</span><span class="si-label">Data Peserta</span><span class="si-badge orange" id="sb-badge-parts">0</span></button>
+      <button class="sidebar-item" id="atab-payments"     onclick="switchAdminTab('payments')"><span class="si-icon">💳</span><span class="si-label">Pembayaran</span><span class="si-badge red" id="sb-badge-pay">0</span></button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Pertandingan -->
+    <div class="sidebar-section">
+      <span class="sidebar-sec-label">Pertandingan</span>
+      <button class="sidebar-item" id="atab-results" onclick="switchAdminTab('results')"><span class="si-icon">🏅</span><span class="si-label">Input Hasil</span></button>
+      <button class="sidebar-item" id="atab-tatami"  onclick="switchAdminTab('tatami')"><span class="si-icon">📋</span><span class="si-label">Jadwal Tatami</span></button>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <!-- Footer -->
+    <div class="sidebar-footer">
+      <button class="sidebar-item" onclick="toggleDark()"><span class="si-icon">🌙</span><span class="si-label">Dark Mode</span></button>
+      <button class="sidebar-item" onclick="doLogout()"><span class="si-icon">🚪</span><span class="si-label">Keluar</span></button>
+    </div>
+  </aside>
+
+  <!-- ══ MAIN AREA ══ -->
+  <div class="admin-main">
+    <!-- Topbar -->
+    <div class="admin-topbar">
+      <div class="admin-topbar-left">
+        <button class="sidebar-toggle" onclick="toggleAdminSidebar()">☰</button>
+        <div>
+          <div class="admin-page-title" id="admin-page-title">Dashboard</div>
+        </div>
+      </div>
+      <div class="admin-topbar-right">
+        <button class="btn-add" onclick="openEvtModal()">＋ Event</button>
+        <button class="btn-icon" onclick="exportEventsCSV()">⬇️ CSV</button>
+      </div>
+    </div>
+
+    <!-- Content -->
+    <div class="admin-content">
+      <!-- DASHBOARD -->
+      <div id="atab-content-dashboard">
+        <div style="font-size:13px;font-weight:700;color:var(--text-muted);letter-spacing:.3px;text-transform:uppercase;margin-bottom:14px">Aksi Cepat</div>
+        <div class="quick-actions-grid" id="quick-actions-grid"></div>
+        <div class="dash-grid" id="dash-cards"></div>
+        <div class="charts-row">
+          <div class="chart-card"><div class="chart-title">👥 Peserta per Event</div><div class="chart-wrap"><canvas id="chart-reg"></canvas></div></div>
+          <div class="chart-card"><div class="chart-title">📊 Status Event</div><div class="chart-wrap"><canvas id="chart-stat"></canvas></div></div>
+        </div>
+        <div class="charts-row-3">
+          <div class="chart-card"><div class="chart-title">🗂️ Event per Kategori</div><div class="chart-wrap"><canvas id="chart-cat"></canvas></div></div>
+          <div class="recent-card"><div class="recent-title">🆕 Pendaftar Terbaru</div><div id="recent-list"></div></div>
+        </div>
+      </div>
+      <!-- EVENTS -->
+      <div id="atab-content-events" style="display:none">
+        <div class="toolbar">
+          <div class="toolbar-left">
+            <div class="search-bar">🔍 <input type="text" placeholder="Cari event…" id="adm-search" oninput="renderAdminEvtTable()"/></div>
+            <select class="toolbar-filter-sel" id="adm-status-filter" onchange="renderAdminEvtTable()"><option value="">Semua Status</option><option value="open">Dibuka</option><option value="soon">Segera</option><option value="closed">Ditutup</option></select>
+            <span class="adm-count" id="adm-count"></span>
+          </div>
+        </div>
+        <div class="table-wrap"><table class="adm-table"><thead><tr>
+          <th onclick="sortEvt('name')" style="min-width:220px">Nama Event ↕</th><th>Kategori</th>
+          <th onclick="sortEvt('dateStart')" style="min-width:110px">Tanggal ↕</th>
+          <th style="min-width:140px">Lokasi</th><th>Status</th><th>Peserta</th><th>Publik</th>
+          <th style="min-width:320px">Aksi</th>
+        </tr></thead><tbody id="adm-tbody"></tbody></table></div>
+      </div>
+      <!-- PARTICIPANTS -->
+      <div id="atab-content-participants" style="display:none">
+        <div class="toolbar">
+          <div class="toolbar-left" style="flex:1">
+            <select id="part-event-filter" class="toolbar-filter-sel" onchange="renderParticipants()" style="min-width:220px"></select>
+            <select id="part-status-filter" class="toolbar-filter-sel" onchange="renderParticipants()"><option value="">Semua Status</option><option value="approved">✓ Diterima</option><option value="pending">⏳ Menunggu</option><option value="rejected">✕ Ditolak</option><option value="cancelled">✗ Dibatalkan</option></select>
+            <div class="search-bar" style="flex:1">🔍 <input type="text" placeholder="Cari nama, email, dojo…" id="part-search" oninput="renderParticipants()"/></div>
+          </div>
+          <button class="btn-icon" onclick="exportParticipantsCSV()">⬇️ Export CSV</button>
+        </div>
+        <div id="parts-summary" style="margin-bottom:12px"></div>
+        <div class="table-wrap"><table class="part-table"><thead><tr><th>#</th><th>No.</th><th>Nama</th><th>Email</th><th>HP</th><th>Dojo</th><th>Kategori</th><th>Sabuk</th><th>Usia</th><th>Kab.</th><th>Event</th><th>Status</th><th>Bayar</th><th>Check-in</th><th>Aksi</th></tr></thead><tbody id="parts-tbody"></tbody></table></div>
+        <div class="empty-state" id="parts-empty" style="display:none"><div class="empty-icon">👥</div><h3>Belum Ada Peserta</h3></div>
+      </div>
+      <!-- PAYMENTS -->
+      <div id="atab-content-payments" style="display:none">
+        <div class="toolbar"><div class="toolbar-left"><select id="pay-admin-filter" class="toolbar-filter-sel" onchange="renderAdminPayments()"><option value="">Semua Status</option><option value="pending">⏳ Menunggu</option><option value="verified">✅ Terverifikasi</option><option value="rejected">❌ Ditolak</option></select></div></div>
+        <div class="pay-info-banner">💳 <strong>Rekening:</strong> Bank <strong>BRI</strong> — <strong>1234-5678-9012-3456</strong> a.n. <strong>FORKI Provinsi Bengkulu</strong></div>
+        <div class="pay-stats-row">
+          <div class="pay-stat-box"><div class="pay-stat-num" style="color:#a16207" id="pay-stat-pending">0</div><div class="pay-stat-lbl">⏳ Menunggu</div></div>
+          <div class="pay-stat-box"><div class="pay-stat-num" style="color:#15803d" id="pay-stat-verified">0</div><div class="pay-stat-lbl">✅ Terverifikasi</div></div>
+          <div class="pay-stat-box"><div class="pay-stat-num" style="color:#b91c1c" id="pay-stat-rejected">0</div><div class="pay-stat-lbl">❌ Ditolak</div></div>
+        </div>
+        <div class="table-wrap"><table class="part-table"><thead><tr><th>#</th><th>Peserta</th><th>Event</th><th>Jumlah</th><th>Status</th><th>Bukti JPG</th><th>Aksi</th></tr></thead><tbody id="pay-tbody"></tbody></table></div>
+      </div>
+      <!-- RESULTS -->
+      <div id="atab-content-results" style="display:none">
+        <div class="toolbar"><div class="toolbar-left"><select id="res-admin-filter" class="toolbar-filter-sel" onchange="renderAdminResultsTab()" style="min-width:280px"><option value="">— Semua Event —</option></select></div><p style="font-size:13px;color:var(--text-muted)">Gunakan tombol 🏅 pada tabel Event untuk input hasil.</p></div>
+        <div id="admin-results-list" style="margin-top:16px"></div>
+      </div>
+      <!-- TATAMI -->
+      <div id="atab-content-tatami" style="display:none">
+        <div class="toolbar"><div class="toolbar-left"><p style="font-size:13px;color:var(--text-muted)">Klik <strong>✏️ Kelola Jadwal</strong> pada event untuk mengatur jadwal tatami.</p></div></div>
+        <div id="admin-tatami-list"></div>
+      </div>
+      <!-- ANNOUNCEMENTS -->
+      <div id="atab-content-announcements" style="display:none">
+        <div class="toolbar">
+          <div class="toolbar-left"><select id="ann-filter-evt" class="toolbar-filter-sel" onchange="renderAdminAnnouncements()" style="min-width:260px"><option value="">— Semua Event —</option></select></div>
+          <button class="btn-add" onclick="openAnnForm()">＋ Tambah</button>
+        </div>
+        <div id="admin-ann-list" style="margin-top:4px"></div>
+        <div id="ann-form-area" style="display:none;margin-top:20px;padding-top:20px;border-top:2px solid var(--border)">
+          <div id="ann-form-title" style="font-weight:800;font-size:15px;margin-bottom:14px">+ Tambah Pengumuman</div>
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div class="form-row">
+              <div class="form-group"><label>Event *</label><select id="ann-f-evt"><option value="">— pilih —</option></select></div>
+              <div class="form-group"><label>Tipe</label><select id="ann-f-type"><option value="info">ℹ️ Info</option><option value="warning">⚠️ Peringatan</option><option value="success">✅ Sukses</option><option value="danger">❌ Penting</option></select></div>
+            </div>
+            <div class="form-group"><label>Judul *</label><input type="text" id="ann-f-title" placeholder="Judul pengumuman…"/></div>
+            <div class="form-group"><label>Isi *</label><textarea id="ann-f-body" placeholder="Tulis isi pengumuman…"></textarea></div>
+            <div style="display:flex;gap:10px"><button class="btn-cancel" onclick="cancelAnnForm()">Batal</button><button class="btn-save" onclick="saveAnn()">💾 Simpan</button></div>
+          </div>
+        </div>
+      </div>
+    </div><!-- /.admin-content -->
+  </div><!-- /.admin-main -->
+</div><!-- /#page-admin-app -->
+
+<!-- MODAL: EVENT FORM -->
+<div class="modal-overlay" id="modal-event-form" onclick="if(event.target===this)closeModal('modal-event-form')">
+  <div class="modal modal-wide">
+    <div class="modal-header"><div><div class="modal-title" id="evt-modal-title">Tambah Event Baru</div></div><button class="modal-close" onclick="closeModal('modal-event-form')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Nama Event *</label><input type="text" id="ef-name" placeholder="cth: Kejuaraan Karate Piala Gubernur 2025"/></div>
+      <div class="form-row">
+        <div class="form-group"><label>Kategori *</label><select id="ef-cat"><option value="">— pilih —</option><option>Kata</option><option>Kumite</option><option>Kata & Kumite</option><option>Junior</option><option>Senior</option><option>Open</option></select></div>
+        <div class="form-group"><label>Status</label><select id="ef-status"><option value="open">Dibuka</option><option value="soon">Segera</option><option value="closed">Ditutup</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Tgl Mulai *</label><input type="date" id="ef-ds"/></div>
+        <div class="form-group"><label>Tgl Selesai *</label><input type="date" id="ef-de"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Deadline Pendaftaran</label><input type="date" id="ef-dl"/></div>
+        <div class="form-group"><label>Biaya Pendaftaran</label><input type="text" id="ef-fee" placeholder="cth: Rp 150.000"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Lokasi / Venue *</label><input type="text" id="ef-loc" placeholder="cth: GOR Rafflesia, Kota Bengkulu"/></div>
+        <div class="form-group"><label>Wilayah</label><select id="ef-kab"><option value="">— pilih —</option><option>Kota Bengkulu</option><option>Bengkulu Utara</option><option>Bengkulu Tengah</option><option>Bengkulu Selatan</option><option>Rejang Lebong</option><option>Kepahiang</option><option>Lebong</option><option>Kaur</option><option>Seluma</option><option>Mukomuko</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Penyelenggara</label><input type="text" id="ef-org" placeholder="cth: FORKI Provinsi Bengkulu"/></div>
+        <div class="form-group"><label>Kuota Maks. Peserta</label><input type="number" id="ef-quota" placeholder="kosongkan = tak terbatas" min="1"/></div>
+      </div>
+      <div class="form-group" style="flex-direction:row;align-items:center;gap:10px">
+        <input type="checkbox" id="ef-approval" style="width:18px;height:18px;flex-shrink:0"/>
+        <label for="ef-approval" style="font-size:13px;font-weight:600;color:var(--text);letter-spacing:0;cursor:pointer">Aktifkan Approval Pendaftaran (admin harus setujui setiap pendaftar)</label>
+      </div>
+      <div class="form-group"><label>Deskripsi</label><textarea id="ef-desc" placeholder="Informasi tambahan…"></textarea></div>
+      <div class="form-group">
+        <label>Foto / Poster</label>
+        <div class="photo-upload-area" onclick="document.getElementById('ef-photo-input').click()">
+          <input type="file" id="ef-photo-input" accept="image/*" onchange="handlePhotoUpload(this)"/>
+          <div class="upload-icon">📷</div><div class="upload-label">Klik untuk upload</div><div class="upload-sub">JPG, PNG — Maks. 3MB</div>
+        </div>
+        <img id="evt-photo-prev" style="margin-top:10px;border-radius:var(--radius-sm);max-height:180px;display:none" alt="Preview"/>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('modal-event-form')">Batal</button><button class="btn-save" onclick="saveEvent()">💾 Simpan Event</button></div>
+  </div>
+</div>
+
+<!-- MODAL: DETAIL -->
+<div class="modal-overlay" id="modal-detail" onclick="if(event.target===this)closeModal('modal-detail')">
+  <div class="modal modal-wide"><div class="modal-header"><div class="modal-title">Detail Event</div><button class="modal-close" onclick="closeModal('modal-detail')">✕</button></div><div id="detail-content" style="overflow-y:auto;max-height:calc(92vh - 70px)"></div></div>
+</div>
+
+<!-- MODAL: REGISTRATION -->
+<div class="modal-overlay" id="modal-reg" onclick="if(event.target===this)closeModal('modal-reg')">
+  <div class="modal">
+    <div class="modal-header">
+      <div><div class="modal-title">Formulir Pendaftaran</div><div class="modal-subtitle" id="reg-event-name">—</div><div style="font-size:12px;font-weight:700;color:var(--green);margin-top:3px">💰 <span id="reg-event-fee">—</span></div></div>
+      <button class="modal-close" onclick="closeModal('modal-reg')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="reg-approval-notice" style="display:none" class="reg-notice">📋 Event ini memerlukan persetujuan admin sebelum pendaftaran dikonfirmasi.</div>
+      <input type="hidden" id="reg-eid"/>
+      <div class="form-row">
+        <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="r-name"/></div>
+        <div class="form-group"><label>Usia *</label><input type="number" id="r-age" min="5" max="80" placeholder="tahun"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Email *</label><input type="email" id="r-email"/></div>
+        <div class="form-group"><label>No. HP *</label><input type="tel" id="r-phone" placeholder="08xxxxxxxxxx"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Dojo / Klub</label><input type="text" id="r-dojo"/></div>
+        <div class="form-group"><label>Tingkat Sabuk</label><select id="r-belt"><option value="">— pilih —</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Kategori Lomba *</label><select id="r-cat"><option value="">— pilih —</option></select></div>
+        <div class="form-group"><label>Kabupaten Asal</label><select id="r-regency"><option value="">— pilih —</option></select></div>
+      </div>
+      <div class="form-group"><label>Catatan</label><textarea id="r-note" style="min-height:60px"></textarea></div>
+      <div class="reg-notice">⚠️ Setelah mendaftar Anda akan diarahkan ke instruksi pembayaran.</div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('modal-reg')">Batal</button><button class="btn-save" onclick="submitReg()">🥋 Daftar & Lanjut Bayar</button></div>
+  </div>
+</div>
+
+<!-- MODAL: PAYMENT INSTRUCTIONS -->
+<div class="modal-overlay" id="modal-pay-instructions" onclick="if(event.target===this)closeModal('modal-pay-instructions')">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">💳 Instruksi Pembayaran</div><button class="modal-close" onclick="closeModal('modal-pay-instructions')">✕</button></div>
+    <div class="modal-body">
+      <div class="pay-success-banner"><div class="icon">✅</div><h3>Pendaftaran Berhasil!</h3><p>Selesaikan pembayaran untuk konfirmasi keikutsertaan</p></div>
+      <div class="pay-summary-box">
+        <div class="pay-summary-row"><span>Event</span><strong id="pi-event-name">—</strong></div>
+        <div class="pay-summary-row"><span>Biaya</span><strong id="pi-amount" style="color:var(--green)">—</strong></div>
+      </div>
+      <div class="bank-box">
+        <div class="bank-box-title">Transfer ke Rekening Berikut</div>
+        <div class="bank-row"><span>Bank</span><strong id="pi-bank">—</strong></div>
+        <div class="bank-row highlight"><span>No. Rekening</span><strong id="pi-account">—</strong></div>
+        <div class="bank-row"><span>Atas Nama</span><strong id="pi-accname">—</strong></div>
+        <div class="bank-row"><span>Keterangan</span><em id="pi-hint" style="font-size:11px;color:rgba(255,255,255,.8)">—</em></div>
+      </div>
+      <input type="hidden" id="pi-reg-id"/><input type="hidden" id="pi-event-id"/>
+      <div class="form-group">
+        <label>Upload Bukti Transfer <span style="color:var(--text-muted);font-weight:400">(JPG saja, opsional)</span></label>
+        <label class="jpg-file-btn" for="pi-bukti-file">📎 Pilih File JPG<input type="file" id="pi-bukti-file" accept=".jpg,.jpeg" onchange="onJpgChange('pi-bukti-file','pi-file-label','pi-file-err')"/></label>
+        <div class="jpg-file-label" id="pi-file-label">Pilih file JPG (maks. 3MB)</div>
+        <div class="jpg-file-error" id="pi-file-err"></div>
+        <div class="jpg-note">⚠️ Hanya file <strong>JPG/JPEG</strong> yang diterima</div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('modal-pay-instructions')">Tutup (Upload Nanti)</button><button class="btn-save" onclick="submitFromInstructions()">📤 Kirim Bukti Bayar</button></div>
+  </div>
+</div>
+
+<!-- MODAL: WA SHARE -->
+<div class="modal-overlay" id="modal-wa-share" onclick="if(event.target===this)closeModal('modal-wa-share')">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">📲 Bagikan via WhatsApp</div><button class="modal-close" onclick="closeModal('modal-wa-share')">✕</button></div>
+    <div class="modal-body">
+      <p style="font-size:14px;color:var(--text-muted)">Bagikan konfirmasi pendaftaran Anda ke WhatsApp:</p>
+      <div class="wa-info-box">
+        <div class="wa-info-row"><span>Event</span><strong id="wa-event-name">—</strong></div>
+        <div class="wa-info-row"><span>Nama</span><strong id="wa-reg-name">—</strong></div>
+        <div class="wa-info-row"><span>Kategori</span><strong id="wa-reg-cat">—</strong></div>
+        <div class="wa-info-row"><span>No. Registrasi</span><code id="wa-reg-id-val" style="font-size:11px">—</code></div>
+      </div>
+      <input type="hidden" id="wa-share-reg-id"/><input type="hidden" id="wa-share-evt-id"/>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-wa-share')">Lewati</button>
+      <button class="btn-save" style="background:#25d366" onclick="shareWhatsApp(document.getElementById('wa-share-reg-id').value,document.getElementById('wa-share-evt-id').value);closeModal('modal-wa-share')">📲 Buka WhatsApp</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PAYMENT (user re-upload) -->
+<div class="modal-overlay" id="modal-payment" onclick="if(event.target===this)closeModal('modal-payment')">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">💳 Status Pembayaran</div><button class="modal-close" onclick="closeModal('modal-payment')">✕</button></div>
+    <div class="modal-body">
+      <div class="pay-summary-box">
+        <div class="pay-summary-row"><span>Peserta</span><strong id="pay-reg-name">—</strong></div>
+        <div class="pay-summary-row"><span>Event</span><strong id="pay-event-name">—</strong></div>
+        <div class="pay-summary-row"><span>Jumlah</span><strong id="pay-amount" style="color:var(--green)">—</strong></div>
+      </div>
+      <div id="pay-status-box"></div>
+      <input type="hidden" id="pay-reg-id"/><input type="hidden" id="pay-event-id"/>
+      <div id="pay-upload-section">
+        <div class="bank-box" style="margin-bottom:14px">
+          <div class="bank-box-title">Transfer ke:</div>
+          <div class="bank-row"><span>Bank</span><strong>BRI</strong></div>
+          <div class="bank-row highlight"><span>No. Rekening</span><strong>1234-5678-9012-3456</strong></div>
+          <div class="bank-row"><span>Atas Nama</span><strong>FORKI Provinsi Bengkulu</strong></div>
+        </div>
+        <label class="jpg-file-btn" for="pay-bukti">📎 Pilih File JPG<input type="file" id="pay-bukti" accept=".jpg,.jpeg" onchange="onJpgChange('pay-bukti','pay-bukti-label','pay-bukti-err')"/></label>
+        <div class="jpg-file-label" id="pay-bukti-label">Pilih file JPG (maks. 3MB)</div>
+        <div class="jpg-file-error" id="pay-bukti-err"></div>
+        <div class="jpg-note">⚠️ Hanya file <strong>JPG/JPEG</strong> yang diterima</div>
+      </div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('modal-payment')">Tutup</button><button class="btn-save" onclick="submitPaymentProof()">📤 Kirim Bukti Bayar</button></div>
+  </div>
+</div>
+
+<!-- MODAL: USER PAYMENTS LIST -->
+<div class="modal-overlay" id="modal-user-pays" onclick="if(event.target===this)closeModal('modal-user-pays')">
+  <div class="modal"><div class="modal-header"><div class="modal-title">💳 Pembayaran Saya</div><button class="modal-close" onclick="closeModal('modal-user-pays')">✕</button></div><div class="modal-body"><div id="user-pay-list"></div></div></div>
+</div>
+
+<!-- MODAL: BRACKET -->
+<div class="modal-overlay" id="modal-bracket" onclick="if(event.target===this)closeModal('modal-bracket')">
+  <div class="modal modal-ultra-wide">
+    <div class="modal-header">
+      <div><div class="modal-title">🏆 Bagan Pertandingan</div><div class="modal-subtitle" id="bkt-event-name">—</div></div>
+      <button class="modal-close" onclick="closeModal('modal-bracket')">✕</button>
+    </div>
+    <div style="padding:14px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+      <select id="bkt-cat-sel" onchange="loadBktForCat()" class="toolbar-filter-sel" style="min-width:240px"><option value="">— Pilih Kategori —</option></select>
+      <input type="hidden" id="bkt-event-id"/>
+    </div>
+    <div id="bkt-content" style="overflow:auto;max-height:calc(90vh - 170px);padding:20px"></div>
+  </div>
+</div>
+
+<!-- MODAL: RESULTS -->
+<div class="modal-overlay" id="modal-results" onclick="if(event.target===this)closeModal('modal-results')">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div><div class="modal-title">🏅 Hasil Pertandingan</div><div class="modal-subtitle" id="res-event-name">—</div></div>
+      <button class="modal-close" onclick="closeModal('modal-results')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="res-event-id"/>
+      <div id="res-list"></div>
+      <div id="res-form-area" style="display:none">
+        <div class="res-form-title" id="res-form-title">Tambah Hasil</div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="form-group"><label>Kategori Lomba *</label><input type="text" id="rf-cat" placeholder="cth: Kumite -67kg Putra"/></div>
+          <div class="form-row"><div class="form-group"><label>🥇 Juara 1 — Nama *</label><input type="text" id="rf-gold"/></div><div class="form-group"><label>🥇 Dojo</label><input type="text" id="rf-gold-d"/></div></div>
+          <div class="form-row"><div class="form-group"><label>🥈 Juara 2 — Nama *</label><input type="text" id="rf-sil"/></div><div class="form-group"><label>🥈 Dojo</label><input type="text" id="rf-sil-d"/></div></div>
+          <div class="form-row"><div class="form-group"><label>🥉 Juara 3 — Nama</label><input type="text" id="rf-b1"/></div><div class="form-group"><label>🥉 Dojo</label><input type="text" id="rf-b1-d"/></div></div>
+          <div class="form-row"><div class="form-group"><label>🥉 Juara 3B — Nama</label><input type="text" id="rf-b2"/></div><div class="form-group"><label>🥉 Dojo</label><input type="text" id="rf-b2-d"/></div></div>
+          <div style="display:flex;gap:10px"><button class="btn-cancel" onclick="closeResForm()">Batal</button><button class="btn-save" onclick="saveResult()">💾 Simpan</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TATAMI ADMIN -->
+<div class="modal-overlay" id="modal-tatami-admin" onclick="if(event.target===this)closeModal('modal-tatami-admin')">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div><div class="modal-title">📋 Kelola Jadwal Tatami</div><div class="modal-subtitle" id="tat-admin-event-name">—</div></div>
+      <button class="modal-close" onclick="closeModal('modal-tatami-admin')">✕</button>
+    </div>
+    <div class="tat-modal-toolbar">
+      <select id="tat-filter-date"   onchange="renderTatamiAdmin(document.getElementById('tat-evt-id').value)"><option value="">Semua Hari</option></select>
+      <select id="tat-filter-tatami" onchange="renderTatamiAdmin(document.getElementById('tat-evt-id').value)"><option value="">Semua Tatami</option><option value="1">Tatami 1</option><option value="2">Tatami 2</option><option value="3">Tatami 3</option><option value="4">Tatami 4</option><option value="5">Tatami 5</option><option value="6">Tatami 6</option></select>
+      <button class="btn-add" style="margin-left:auto" onclick="openTatForm()">＋ Tambah Sesi</button>
+      <button class="btn-icon" onclick="exportTatamiCSV(document.getElementById('tat-evt-id').value)">⬇️ CSV</button>
+    </div>
+    <div class="tat-admin-list-wrap"><input type="hidden" id="tat-evt-id"/><div id="tat-admin-list"></div></div>
+    <div class="tat-form-area" id="tat-form-area" style="display:none">
+      <div class="tat-form-title" id="tat-form-title">+ Tambah Sesi</div>
+      <div class="tat-form-grid">
+        <div class="form-group"><label>Tanggal *</label><select id="tat-form-date"></select></div>
+        <div class="form-group"><label>Nomor Tatami *</label><select id="tat-form-tatami"><option value="">— pilih —</option><option value="1">Tatami 1</option><option value="2">Tatami 2</option><option value="3">Tatami 3</option><option value="4">Tatami 4</option><option value="5">Tatami 5</option><option value="6">Tatami 6</option></select></div>
+        <div class="form-group"><label>Jam Mulai *</label><input type="time" id="tat-form-ts"/></div>
+        <div class="form-group"><label>Jam Selesai</label><input type="time" id="tat-form-te"/></div>
+        <div class="form-group full">
+          <label>Kategori *</label>
+          <select id="tat-form-cat" onchange="onTatCatChange()">
+            <option value="">— pilih —</option>
+            <optgroup label="Putra"><option>Kata Perorangan Putra</option><option>Kata Beregu Putra</option><option>Kumite -55kg Putra</option><option>Kumite -60kg Putra</option><option>Kumite -67kg Putra</option><option>Kumite -75kg Putra</option><option>Kumite -84kg Putra</option><option>Kumite +84kg Putra</option></optgroup>
+            <optgroup label="Putri"><option>Kata Perorangan Putri</option><option>Kata Beregu Putri</option><option>Kumite -50kg Putri</option><option>Kumite -55kg Putri</option><option>Kumite -61kg Putri</option><option>Kumite -68kg Putri</option><option>Kumite +68kg Putri</option></optgroup>
+            <optgroup label="Junior"><option>Kata Perorangan Junior Putra</option><option>Kata Perorangan Junior Putri</option><option>Kumite -45kg Junior Putra</option><option>Kumite -40kg Junior Putri</option></optgroup>
+            <option value="__custom__">✏️ Tulis sendiri…</option>
+          </select>
+        </div>
+        <div class="form-group full" id="tat-custom-wrap" style="display:none"><label>Nama Kategori (manual)</label><input type="text" id="tat-form-custom-cat" placeholder="cth: Final Kata Beregu"/></div>
+        <div class="form-group"><label>Wasit Utama</label><input type="text" id="tat-form-referee" placeholder="Nama wasit…"/></div>
+        <div class="form-group"><label>Catatan</label><input type="text" id="tat-form-notes" placeholder="cth: Semifinal"/></div>
+      </div>
+      <div class="tat-form-btns"><button class="btn-cancel" onclick="cancelTatForm()">Batal</button><button class="btn-save" onclick="saveTatSession()">💾 Simpan Sesi</button></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: TATAMI VIEW -->
+<div class="modal-overlay" id="modal-tatami-view" onclick="if(event.target===this)closeModal('modal-tatami-view')">
+  <div class="modal modal-ultra-wide">
+    <div class="modal-header">
+      <div><div class="modal-title">📋 Jadwal Tatami</div><div class="modal-subtitle" id="tat-view-event-name">—</div></div>
+      <button class="modal-close" onclick="closeModal('modal-tatami-view')">✕</button>
+    </div>
+    <div class="tat-view-toolbar">
+      <select id="tat-view-date"   onchange="renderTatamiView(document.getElementById('tat-view-evt-id').value)"><option value="">Semua Hari</option></select>
+      <select id="tat-view-tatami" onchange="renderTatamiView(document.getElementById('tat-view-evt-id').value)"><option value="">Semua Tatami</option><option value="1">Tatami 1</option><option value="2">Tatami 2</option><option value="3">Tatami 3</option><option value="4">Tatami 4</option><option value="5">Tatami 5</option><option value="6">Tatami 6</option></select>
+      <span style="font-size:12px;color:var(--text-muted);margin-left:auto">💡 Pilih hari untuk tampilan grid side-by-side</span>
+      <input type="hidden" id="tat-view-evt-id"/>
+    </div>
+    <div class="tat-view-content" id="tat-view-content"></div>
+  </div>
+</div>
+
+<!-- MODAL: LEADERBOARD -->
+<div class="modal-overlay" id="modal-leaderboard" onclick="if(event.target===this)closeModal('modal-leaderboard')">
+  <div class="modal modal-wide">
+    <div class="modal-header"><div class="modal-title">🏅 Leaderboard Dojo</div><button class="modal-close" onclick="closeModal('modal-leaderboard')">✕</button></div>
+    <div class="modal-body">
+      <select id="lb-filter-evt" class="form-select" style="max-width:320px;margin-bottom:8px" onchange="renderLeaderboard()"><option value="">— Semua Event —</option></select>
+      <div id="lb-list"></div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: EDIT PROFILE -->
+<div class="modal-overlay" id="modal-edit-profile" onclick="if(event.target===this)closeModal('modal-edit-profile')">
+  <div class="modal">
+    <div class="modal-header"><div class="modal-title">✏️ Edit Profil</div><button class="modal-close" onclick="closeModal('modal-edit-profile')">✕</button></div>
+    <div class="modal-body">
+      <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="edit-name"/></div>
+      <div class="form-group"><label>No. HP</label><input type="tel" id="edit-phone" placeholder="08xxxxxxxxxx"/></div>
+      <div class="form-group"><label>Dojo / Klub Karate</label><input type="text" id="edit-dojo"/></div>
+    </div>
+    <div class="modal-footer"><button class="btn-cancel" onclick="closeModal('modal-edit-profile')">Batal</button><button class="btn-save" onclick="saveProfile()">Simpan</button></div>
+  </div>
+</div>
+
+<!-- CONFIRM DIALOG -->
+<div class="confirm-overlay" id="confirm-dialog">
+  <div class="confirm-box">
+    <div class="confirm-icon">⚠️</div>
+    <div class="confirm-title" id="conf-title">Konfirmasi</div>
+    <div class="confirm-msg"   id="conf-msg">Apakah Anda yakin?</div>
+    <div class="confirm-btns"><button class="btn-conf-cancel" onclick="closeConfirm()">Batal</button><button class="btn-conf-ok" onclick="doConfirm()">Ya, Lanjutkan</button></div>
+  </div>
+</div>
+
+<!-- KUMITE TIMER (floating) -->
+<div class="kumite-timer" id="kumite-timer">
+  <div style="font-size:11px;font-weight:800;letter-spacing:1px;opacity:.8">⏱ TIMER KUMITE</div>
+  <div class="timer-display" id="timer-display">03:00</div>
+  <select class="timer-preset" id="timer-preset" onchange="onTimerPresetChange()">
+    <option value="180">3:00 menit</option><option value="120">2:00 menit</option>
+    <option value="150">2:30 menit</option><option value="60">1:00 menit</option>
+  </select>
+  <div class="timer-controls">
+    <button class="timer-btn btn-start" id="timer-btn-start" onclick="startTimer()">▶ Start</button>
+    <button class="timer-btn btn-pause" id="timer-btn-pause" onclick="pauseTimer()" style="display:none">⏸ Pause</button>
+    <button class="timer-btn" onclick="resetTimer()">↺ Reset</button>
+    <button class="timer-btn" onclick="toggleTimer()" title="Tutup">✕</button>
+  </div>
+</div>
+
+<!-- TIMER TOGGLE BTN (admin only) -->
+<button id="timer-fab" onclick="toggleTimer()" style="display:none;position:fixed;bottom:24px;right:24px;z-index:1400;width:52px;height:52px;border-radius:50%;background:var(--primary);color:#fff;font-size:22px;border:none;cursor:pointer;box-shadow:var(--shadow-lg)">⏱</button>
+
+<div class="toast-container" id="toast-ct"></div>
+
+<!-- MODAL: GALLERY -->
+<div class="modal-overlay" id="modal-gallery" onclick="if(event.target===this)closeModal('modal-gallery')">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">🖼️ Galeri Foto Event</div>
+        <div class="modal-subtitle" id="gal-modal-event-name">—</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:12px">
+        <span id="gal-count" style="font-size:12px;color:var(--text-muted);font-weight:600"></span>
+        <button class="modal-close" onclick="closeModal('modal-gallery')">✕</button>
+      </div>
+    </div>
+    <div class="modal-body" style="gap:0;padding:16px 20px">
+      <input type="hidden" id="gal-event-id"/>
+      <div id="gal-content"></div>
+      <!-- Upload section (admin only) -->
+      <div class="gal-upload-section" id="gal-upload-section" style="display:none">
+        <span class="gal-upload-label">Upload Foto Dokumentasi (JPG saja, maks 20 foto, 3MB/foto)</span>
+        <div class="gal-upload-area" onclick="document.getElementById('gal-file-input').click()">
+          <input type="file" id="gal-file-input" accept=".jpg,.jpeg" multiple onchange="handleGalleryUpload(this)"/>
+          <div style="font-size:28px;margin-bottom:6px">📷</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Klik atau drag foto JPG ke sini</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">Pilih beberapa sekaligus — hanya JPG/JPEG diterima</div>
+        </div>
+        <div class="gal-upload-err" id="gal-upload-err"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this||event.target.id==='lightbox')closeLightbox()">
+  <div class="lb-inner">
+    <button class="lb-close" onclick="closeLightbox()">✕</button>
+    <div class="lb-img-wrap">
+      <button class="lb-nav-btn" id="lb-prev" onclick="lbPrev()">‹</button>
+      <img id="lb-img" src="" alt="Foto galeri"/>
+      <button class="lb-nav-btn" id="lb-next" onclick="lbNext()">›</button>
+    </div>
+    <div class="lb-footer">
+      <span id="lb-caption"></span>
+      <span id="lb-counter"></span>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: DOCUMENTS -->
+<div class="modal-overlay" id="modal-docs" onclick="if(event.target===this)closeModal('modal-docs')">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">📎 Dokumen & Lampiran</div>
+        <div class="modal-subtitle" id="docs-modal-event-name">—</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-docs')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="docs-event-id"/>
+      <div id="docs-list"></div>
+      <div id="docs-upload-section" style="display:none;padding-top:16px;border-top:1.5px solid var(--border);margin-top:8px">
+        <div style="font-size:12px;font-weight:700;color:var(--text-muted);margin-bottom:8px">Upload Dokumen Baru (PDF, DOC, XLS, JPG — maks 10MB)</div>
+        <div class="docs-upload-wrap" onclick="document.getElementById('docs-file-input').click()">
+          <input type="file" id="docs-file-input" accept=".pdf,.doc,.docx,.xls,.xlsx,.jpg,.jpeg,.png" onchange="handleDocUpload(this)"/>
+          <div style="font-size:24px;margin-bottom:6px">📄</div>
+          <div style="font-size:13px;font-weight:700;color:var(--text)">Klik untuk pilih file</div>
+          <div style="font-size:11px;color:var(--text-muted);margin-top:4px">PDF · DOC · DOCX · XLS · XLSX · Gambar — Maks. 10MB</div>
+        </div>
+        <div class="docs-upload-err" id="docs-upload-err"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: WEIGH-IN -->
+<div class="modal-overlay" id="modal-weighin" onclick="if(event.target===this)closeModal('modal-weighin')">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">⚖️ Weigh-in (Timbang Badan Resmi)</div>
+        <div class="modal-subtitle" id="wi-event-name">—</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-weighin')">✕</button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="wi-event-id"/>
+
+      <!-- Input timbang -->
+      <div style="background:var(--surface2);border-radius:var(--radius-sm);padding:16px;margin-bottom:4px">
+        <div class="form-group" style="margin-bottom:12px">
+          <label>Pilih Peserta Kumite</label>
+          <select id="wi-participant" onchange="onWeighinParticipantChange()" class="form-select"></select>
+        </div>
+        <div class="wi-input-group">
+          <input type="number" id="wi-weight-input" placeholder="0.0" step="0.1" min="10" max="200"/>
+          <span class="wi-unit">kg</span>
+        </div>
+        <div id="wi-result-badge" class="wi-badge" style="display:none"></div>
+        <div class="wi-error" id="wi-error"></div>
+        <div style="display:flex;gap:10px;margin-top:14px">
+          <button class="btn-save" onclick="saveWeighin()">⚖️ Catat Berat</button>
+          <button class="btn-icon" onclick="exportWeighinCSV(document.getElementById('wi-event-id').value)">⬇️ Export CSV</button>
+        </div>
+      </div>
+
+      <!-- Table hasil timbang -->
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin:16px 0 10px">Hasil Weigh-in</div>
+      <div class="table-wrap">
+        <table class="part-table">
+          <thead><tr><th>Nama</th><th>Kategori</th><th>Berat</th><th>Limit</th><th>Status</th></tr></thead>
+          <tbody id="wi-table-body"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: SEEDING -->
+<div class="modal-overlay" id="modal-seeding" onclick="if(event.target===this)closeModal('modal-seeding')">
+  <div class="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">🎯 Seeding / Nomor Unggulan</div>
+        <div class="modal-subtitle" id="seed-event-name">—</div>
+        <div style="font-size:11px;color:var(--text-muted);margin-top:2px">Kategori: <strong id="seed-cat-name">—</strong></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-seeding')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--blue-light);border:1.5px solid #bfdbfe;border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:#1d4ed8;margin-bottom:8px">
+        💡 Unggulan #1 → posisi atas, #2 → bawah, #3 & #4 → tengah. Peserta tanpa seed diacak di slot kosong.
+      </div>
+      <div id="seed-list"></div>
+      <div style="margin-top:16px;display:flex;gap:10px">
+        <button class="btn-save" onclick="closeModal('modal-seeding');toast('✓ Seeding disimpan','success')">✓ Simpan & Tutup</button>
+        <button class="btn-cancel" onclick="clearSeeding()">🗑️ Hapus Semua Seeding</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MULTI-CATEGORY REGISTRATION -->
+<div class="modal-overlay" id="modal-multi-reg" onclick="if(event.target===this)closeModal('modal-multi-reg')">
+  <div class="modal modal-wide">
+    <div class="modal-header">
+      <div>
+        <div class="modal-title">📋 Daftar Multi-Kategori</div>
+        <div class="modal-subtitle" id="mreg-event-name">—</div>
+        <div style="font-size:12px;font-weight:700;color:var(--green);margin-top:3px">💰 Per kategori: <span id="mreg-event-fee">—</span></div>
+      </div>
+      <button class="modal-close" onclick="closeModal('modal-multi-reg')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="mreg-approval-notice" style="display:none" class="reg-notice">📋 Event ini memerlukan persetujuan admin setelah mendaftar.</div>
+      <input type="hidden" id="mreg-event-id"/>
+
+      <!-- Data diri peserta -->
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin-bottom:10px">Data Diri Peserta</div>
+      <div class="form-row">
+        <div class="form-group"><label>Nama Lengkap *</label><input type="text" id="mr-name"/></div>
+        <div class="form-group"><label>Usia *</label><input type="number" id="mr-age" min="5" max="80" placeholder="tahun"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Email *</label><input type="email" id="mr-email"/></div>
+        <div class="form-group"><label>No. HP *</label><input type="tel" id="mr-phone" placeholder="08xxxxxxxxxx"/></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Dojo / Klub</label><input type="text" id="mr-dojo"/></div>
+        <div class="form-group"><label>Tingkat Sabuk</label><select id="mr-belt"><option value="">— pilih —</option></select></div>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>Kabupaten Asal</label><select id="mr-regency"><option value="">— pilih —</option></select></div>
+        <div class="form-group"><label>Catatan</label><input type="text" id="mr-note" placeholder="opsional"/></div>
+      </div>
+
+      <!-- Pilih kategori -->
+      <div style="font-size:13px;font-weight:800;color:var(--text);margin:14px 0 8px">Pilih Kategori (maks. 4)</div>
+      <div id="mreg-cat-list"></div>
+
+      <!-- Fee summary -->
+      <div class="mreg-fee-summary" id="mreg-fee-summary">Pilih minimal 1 kategori</div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-multi-reg')">Batal</button>
+      <button class="btn-save" onclick="submitMultiReg()">📋 Daftar Semua Kategori</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: MULTI-PAYMENT INSTRUCTIONS -->
+<div class="modal-overlay" id="modal-multi-pay" onclick="if(event.target===this)closeModal('modal-multi-pay')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">💳 Pembayaran Multi-Kategori</div>
+      <button class="modal-close" onclick="closeModal('modal-multi-pay')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="pay-success-banner">
+        <div class="icon">✅</div>
+        <h3>Pendaftaran Berhasil!</h3>
+        <p id="mpi-event-name" style="font-weight:700;color:var(--text);margin-top:6px">—</p>
+      </div>
+      <div class="pay-summary-box">
+        <div id="mpi-categories"></div>
+        <div class="mpi-total-row"><span>Total Pembayaran</span><strong id="mpi-total" style="color:var(--green)">—</strong></div>
+      </div>
+      <div class="bank-box">
+        <div class="bank-box-title">Transfer ke Rekening Berikut</div>
+        <div class="bank-row"><span>Bank</span><strong id="mpi-bank">—</strong></div>
+        <div class="bank-row highlight"><span>No. Rekening</span><strong id="mpi-account">—</strong></div>
+        <div class="bank-row"><span>Atas Nama</span><strong id="mpi-accname">—</strong></div>
+      </div>
+      <input type="hidden" id="mpi-reg-ids"/>
+      <input type="hidden" id="mpi-event-id"/>
+      <div class="form-group" style="margin-top:4px">
+        <label>Upload Bukti Transfer (JPG saja, opsional)</label>
+        <label class="jpg-file-btn" for="mpi-bukti-file">📎 Pilih File JPG
+          <input type="file" id="mpi-bukti-file" accept=".jpg,.jpeg" onchange="onJpgChange('mpi-bukti-file','mpi-file-label','mpi-file-err')"/>
+        </label>
+        <div class="jpg-file-label" id="mpi-file-label">Pilih file JPG (maks. 3MB)</div>
+        <div class="jpg-file-error" id="mpi-file-err"></div>
+        <div class="jpg-note">⚠️ Hanya file <strong>JPG/JPEG</strong> yang diterima</div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-multi-pay')">Tutup (Upload Nanti)</button>
+      <button class="btn-save" onclick="submitMultiPayment()">📤 Kirim Bukti Bayar</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: PARTICIPANT CARD -->
+<div class="modal-overlay" id="modal-participant-card" onclick="if(event.target===this)closeModal('modal-participant-card')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🪪 Kartu Peserta Digital</div>
+      <button class="modal-close" onclick="closeModal('modal-participant-card')">✕</button>
+    </div>
+    <div class="modal-body" id="pcard-content"></div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-participant-card')">Tutup</button>
+      <button class="btn-save" onclick="printParticipantCard()">🖨️ Cetak Kartu</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL: CHANGE PASSWORD -->
+<div class="modal-overlay" id="modal-change-password" onclick="if(event.target===this)closeModal('modal-change-password')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🔑 Ganti Password</div>
+      <button class="modal-close" onclick="closeModal('modal-change-password')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><label>Password Lama *</label><input type="password" id="cp-old" placeholder="Masukkan password lama"/></div>
+      <div class="form-group"><label>Password Baru * <span style="font-size:10px;color:var(--text-muted)">(min. 6 karakter)</span></label><input type="password" id="cp-new" placeholder="Password baru"/></div>
+      <div class="form-group"><label>Konfirmasi Password Baru *</label><input type="password" id="cp-new2" placeholder="Ulangi password baru" onkeydown="if(event.key==='Enter')savePassword()"/></div>
+      <div class="error-msg" id="cp-error"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeModal('modal-change-password')">Batal</button>
+      <button class="btn-save" onclick="savePassword()">🔑 Simpan Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- SCRIPTS -->
+<script src="js/config/constants.js"></script>
+<script src="js/core/storage.js"></script>
+<script src="js/core/utils.js"></script>
+<script src="js/core/router.js"></script>
+<script src="js/auth/auth.js"></script>
+<script src="js/events/listing.js"></script>
+<script src="js/events/registration.js"></script>
+<script src="js/bracket/bracket.js"></script>
+<script src="js/results/results.js"></script>
+<script src="js/payment/payment.js"></script>
+<script src="js/tatami/tatami.js"></script>
+<script src="js/tools/timer.js"></script>
+<script src="js/tools/leaderboard.js"></script>
+<script src="js/tools/announcements.js"></script>
+<script src="js/tools/gallery.js"></script>
+<script src="js/tools/ui.js"></script>
+<script src="js/tools/extras.js"></script>
+<script src="js/events/multi-reg.js"></script>
+<script src="js/admin/dashboard.js"></script>
+<script src="js/admin/event-crud.js"></script>
+<script src="js/admin/participants.js"></script>
+<script src="js/participant/features.js"></script>
+<script>
+/* ── ADMIN TOPBAR TITLE SYNC ───────────────────── */
+(function(){
+  const titles = {
+    dashboard:'Dashboard', events:'Kelola Event', participants:'Data Peserta',
+    payments:'Pembayaran', results:'Input Hasil', tatami:'Jadwal Tatami',
+    announcements:'Pengumuman'
+  };
+  const orig = switchAdminTab;
+  window.switchAdminTab = function(tab) {
+    orig(tab);
+    const el = document.getElementById('admin-page-title');
+    if (el) el.textContent = titles[tab] || tab;
+  };
+})();
+</script>
+<script>
+// Show timer FAB only for admin
+document.addEventListener('DOMContentLoaded',()=>{
+  const orig = enterAdminApp;
+  window.enterAdminApp = function(){
+    orig();
+    document.getElementById('timer-fab').style.display = 'flex';
+    document.getElementById('timer-fab').style.alignItems = 'center';
+    document.getElementById('timer-fab').style.justifyContent = 'center';
+  };
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,214 @@
+/* ═══════════════════════════════════════════════════════
+   css/admin.css — Admin panel: tab, tabel, dashboard
+═══════════════════════════════════════════════════════ */
+
+/* ── ADMIN TAB BAR ───────────────────────────────────*/
+.admin-tabs-bar {
+  display: flex; flex-wrap: wrap; gap: 2px;
+  padding: 16px 24px 0;
+  border-bottom: 2px solid var(--border);
+  background: var(--surface); overflow-x: auto;
+}
+.admin-tab-btn {
+  font-size: 13px; font-weight: 700; padding: 10px 20px;
+  border: none; background: none; color: var(--text-muted);
+  cursor: pointer; border-bottom: 3px solid transparent;
+  margin-bottom: -2px; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  transition: all .2s; white-space: nowrap;
+}
+.admin-tab-btn:hover  { color: var(--primary); background: var(--blue-light); }
+.admin-tab-btn.active { color: var(--primary); border-bottom-color: var(--primary); background: var(--blue-light); }
+
+/* ── DASHBOARD CARDS ─────────────────────────────────*/
+.dash-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 16px; margin-bottom: 24px;
+}
+.dash-stat-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px;
+  box-shadow: var(--shadow-sm); transition: transform .2s, box-shadow .2s;
+}
+.dash-stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+.dsc-icon {
+  width: 44px; height: 44px; border-radius: var(--radius-sm);
+  font-size: 22px; display: flex; align-items: center; justify-content: center;
+  margin-bottom: 12px;
+}
+.dsc-num { font-size: 30px; font-weight: 800; color: var(--text); margin-bottom: 4px; }
+.dsc-lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+/* ── CHARTS LAYOUT ───────────────────────────────────*/
+.charts-row {
+  display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 20px;
+}
+.chart-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm);
+}
+.chart-title { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 16px; }
+.chart-wrap  { height: 220px; position: relative; }
+.charts-row-3 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px; }
+
+/* ── RECENT LIST ─────────────────────────────────────*/
+.recent-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-lg); padding: 20px; box-shadow: var(--shadow-sm);
+}
+.recent-title  { font-size: 14px; font-weight: 800; color: var(--text); margin-bottom: 14px; }
+.recent-row {
+  display: flex; align-items: center; gap: 12px; padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.recent-row:last-child { border-bottom: none; }
+.recent-avatar {
+  width: 36px; height: 36px; border-radius: 50%; background: var(--primary);
+  color: #fff; font-size: 14px; font-weight: 800;
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+}
+.recent-info   { flex: 1; min-width: 0; }
+.recent-name   { font-size: 13px; font-weight: 700; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-detail { font-size: 11px; color: var(--text-muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.recent-time   { font-size: 11px; color: var(--text-light); white-space: nowrap; flex-shrink: 0; }
+
+/* ── TOOLBAR ─────────────────────────────────────────*/
+.toolbar {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.toolbar-left  { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; flex: 1; }
+.search-bar {
+  display: flex; align-items: center; gap: 8px;
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 9px 13px; flex: 1; min-width: 200px;
+  font-size: 13px; color: var(--text-muted); transition: border-color .2s;
+}
+.search-bar:focus-within { border-color: var(--primary); }
+.search-bar input {
+  border: none; background: none; outline: none; font-size: 13px;
+  color: var(--text); font-family: var(--font); width: 100%;
+}
+.adm-count { font-size: 12px; font-weight: 700; color: var(--text-muted); white-space: nowrap; }
+.toolbar-filter-sel {
+  background: var(--surface2); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); color: var(--text); font-family: var(--font);
+  font-size: 13px; font-weight: 500; padding: 9px 13px; outline: none;
+  min-width: 160px; transition: border-color .2s;
+}
+.toolbar-filter-sel:focus { border-color: var(--primary); }
+.btn-icon {
+  font-size: 13px; font-weight: 700; padding: 9px 16px;
+  border-radius: var(--radius-sm); border: 1.5px solid var(--border);
+  color: var(--text-muted); background: var(--surface); cursor: pointer; transition: all .2s;
+  white-space: nowrap;
+}
+.btn-icon:hover { background: var(--surface2); color: var(--text); }
+.btn-add {
+  font-size: 13px; font-weight: 800; padding: 9px 18px;
+  border-radius: var(--radius-sm); background: var(--primary);
+  color: #fff; border: none; cursor: pointer; transition: background .2s; white-space: nowrap;
+}
+.btn-add:hover { background: var(--primary-light); }
+
+/* ── ADMIN TABLES ────────────────────────────────────*/
+.table-wrap { overflow-x: auto; }
+.adm-table, .part-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 13px; background: var(--surface);
+  border-radius: var(--radius); overflow: hidden;
+  border: 1.5px solid var(--border);
+}
+.adm-table th, .part-table th {
+  background: var(--surface2); padding: 12px 14px;
+  font-size: 11px; font-weight: 800; letter-spacing: .5px;
+  text-transform: uppercase; color: var(--text-muted);
+  border-bottom: 1.5px solid var(--border); text-align: left;
+  white-space: nowrap; cursor: pointer; user-select: none;
+}
+.adm-table th:hover, .part-table th:hover { color: var(--primary); }
+.adm-table td, .part-table td {
+  padding: 12px 14px; border-bottom: 1px solid var(--border);
+  vertical-align: middle; color: var(--text);
+}
+.adm-table tr:last-child td, .part-table tr:last-child td { border-bottom: none; }
+.adm-table tr:hover td, .part-table tr:hover td { background: var(--surface2); }
+.td-empty {
+  text-align: center; color: var(--text-muted); padding: 32px !important;
+  font-size: 13px; font-weight: 600;
+}
+.td-evt-cell { display: flex; align-items: center; gap: 12px; }
+.td-thumb {
+  width: 40px; height: 40px; border-radius: 8px;
+  object-fit: cover; flex-shrink: 0;
+}
+.td-thumb-default {
+  width: 40px; height: 40px; border-radius: 8px;
+  background: var(--blue-light); display: flex;
+  align-items: center; justify-content: center; font-size: 20px; flex-shrink: 0;
+}
+.td-name { font-weight: 700; font-size: 13px; color: var(--text); }
+.td-loc  { font-size: 12px; color: var(--text-muted); max-width: 160px; }
+.td-mono { font-size: 12px; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.reg-count-badge {
+  background: var(--primary); color: #fff; font-size: 12px; font-weight: 800;
+  padding: 3px 10px; border-radius: 99px;
+}
+.pub-badge { font-size: 11px; font-weight: 700; }
+.pub-badge.pub-on  { color: var(--green); }
+.pub-badge.pub-off { color: var(--text-muted); }
+.action-btns { display: flex; gap: 6px; flex-wrap: wrap; }
+
+/* ── PAYMENT ADMIN INFO BANNER ───────────────────────*/
+.pay-info-banner {
+  background: #eff6ff; border: 1.5px solid #bfdbfe;
+  border-radius: var(--radius-sm); padding: 12px 16px;
+  font-size: 13px; color: #1e40af; margin-bottom: 16px;
+}
+.pay-stats-row {
+  display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;
+}
+.pay-stat-box {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm); padding: 14px 20px;
+  flex: 1; min-width: 120px; text-align: center;
+}
+.pay-stat-num { font-size: 26px; font-weight: 800; }
+.pay-stat-lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; }
+
+/* ── PARTICIPANTS SUMMARY BAR ────────────────────────*/
+.parts-summary-bar {
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+  font-size: 13px; font-weight: 600; padding: 10px 0;
+}
+.summ-pill {
+  font-size: 11px; font-weight: 700; padding: 4px 12px;
+  border-radius: 99px; background: var(--blue-light); color: var(--blue);
+}
+
+/* ── ADMIN RESULTS ───────────────────────────────────*/
+.result-admin-card {
+  background: var(--surface); border: 1.5px solid var(--border);
+  border-radius: var(--radius); padding: 16px 20px; margin-bottom: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.result-admin-header {
+  display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 10px;
+}
+.result-admin-event { font-size: 12px; color: var(--text-muted); margin-bottom: 2px; }
+.result-admin-cat   { font-size: 15px; font-weight: 800; color: var(--primary); }
+
+/* ── SECTION WRAPPER ─────────────────────────────────*/
+.section { padding: 24px; }
+@media (max-width: 600px) { .section { padding: 16px; } }
+
+/* ── DARK MODE ADMIN ─────────────────────────────────*/
+body.dark .dash-stat-card { background: var(--surface); }
+body.dark .chart-card     { background: var(--surface); }
+body.dark .recent-card    { background: var(--surface); }
+body.dark .adm-table, body.dark .part-table { background: var(--surface); }
+body.dark .adm-table th, body.dark .part-table th { background: var(--surface2); }
+body.dark .podium-item.gold   { background: rgba(234,179,8,.1);  border-left-color: #eab308; }
+body.dark .podium-item.silver { background: rgba(148,163,184,.1); border-left-color: #94a3b8; }
+body.dark .podium-item.bronze { background: rgba(249,115,22,.1);  border-left-color: #f97316; }
+body.dark .pay-info-banner    { background: rgba(37,99,235,.1); border-color: rgba(37,99,235,.25); color: #93c5fd; }
